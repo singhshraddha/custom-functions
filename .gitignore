@@ -1,0 +1,129 @@
+#credentials for testing #
+##########################
+scripts/credentials.json
+
+#debug file #
+#############
+scripts/debugPipelineSourceData.csv
+
+# Editor temporary/working/backup files #
+#########################################
+.#*
+[#]*#
+*~
+*$
+*.bak
+*.diff
+.idea/
+*.iml
+*.ipr
+*.iws
+*.org
+.project
+pmip
+*.rej
+.settings/
+.*.sw[nop]
+.sw[nop]
+*.tmp
+*.vim
+.vscode
+tags
+cscope.out
+# gnu global
+GPATH
+GRTAGS
+GSYMS
+GTAGS
+.cache
+
+# Compiled source #
+###################
+*.a
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.o.d
+*.py[ocd]
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.bz2
+*.bzip2
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.tbz2
+*.tgz
+*.zip
+
+# Python files #
+################
+# setup.py working directory
+build
+# sphinx build directory
+_build
+# setup.py dist directory
+dist
+doc/build
+doc/cdoc/build
+# Egg metadata
+*.egg-info
+# The shelf plugin uses this dir
+./.shelf
+MANIFEST
+.cache
+
+# Paver generated files #
+#########################
+/release
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# Patches #
+###########
+*.patch
+*.diff
+
+# OS generated files #
+######################
+.DS_Store*
+.VolumeIcon.icns
+.fseventsd
+Icon?
+.gdb_history
+ehthumbs.db
+Thumbs.db
+.spyproject/codestyle.ini
+.spyproject/encoding.ini
+.spyproject/vcs.ini
+.spyproject/workspace.ini
+scripts/credentials_as_dev.json
+scripts/df_test_entity_for_multiplytwoitems.csv
+scripts/df_test_entity_for_pythonfunction.csv
+scripts/data_writer_data_writer_input_level_.csv
+scripts/EntityType_widgets_trace_20190516051848439272.json
+*.csv
+*.json
+scripts/register_bifs.py
+scripts/intro_tutorial.py
+scripts/intro_tutorial.py
+scripts/intro_tutorial.py
+tests/test_broken_functions.py
+tests/test_merge_dt_test.py
+tests/test_specialization_of_function.py
+tests/test_specialization_of_function.py
+tests/test_broken_functions.py
