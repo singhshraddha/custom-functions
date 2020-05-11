@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 PACKAGE_URL = 'git+https://github.com/singhshraddha/custom-functions@development'
 
 
-class HelloWorld(BaseTransformer):
+class SS_HelloWorld(BaseTransformer):
     '''
     The docstring of the function will show as the function description in the UI.
     '''
