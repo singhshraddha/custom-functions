@@ -5,6 +5,7 @@ import math
 from sqlalchemy.sql.sqltypes import TIMESTAMP, VARCHAR
 import numpy as np
 import pandas as pd
+import re
 
 from iotfunctions.base import (BaseTransformer,
                                BaseSimpleAggregator)
