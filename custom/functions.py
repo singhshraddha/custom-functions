@@ -81,7 +81,13 @@ class SS_HelloWorldAggregator(BaseSimpleAggregator):
         self.expression = expression
 
     def execute(self, df):
-        return eval(re.sub(r"\$\{GROUP\}", r"df", self.expression))
+        print(df)
+        print('----------------------------------------------------')
+        df = eval(re.sub(r"\$\{GROUP\}", r"df", self.expression))
+
+        print(df)
+
+        return df
 
     @classmethod
     def build_ui(cls):
