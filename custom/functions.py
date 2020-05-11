@@ -6,7 +6,8 @@ from sqlalchemy.sql.sqltypes import TIMESTAMP, VARCHAR
 import numpy as np
 import pandas as pd
 
-from iotfunctions.base import BaseTransformer
+from iotfunctions.base import (BaseTransformer,
+                               BaseSimpleAggregator)
 from iotfunctions import ui
 
 logger = logging.getLogger(__name__)
