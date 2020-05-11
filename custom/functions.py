@@ -9,6 +9,8 @@ import pandas as pd
 from iotfunctions.base import (BaseTransformer,
                                BaseSimpleAggregator)
 from iotfunctions import ui
+from iotfunctions.ui import (UIMultiItem,
+                             UIExpression)
 
 logger = logging.getLogger(__name__)
 
