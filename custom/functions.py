@@ -81,13 +81,11 @@ class SS_HelloWorldAggregator(BaseSimpleAggregator):
         self.expression = expression
 
     def execute(self, df):
-        print(df)
-        print('----------------------------------------------------')
-        df = eval(re.sub(r"\$\{GROUP\}", r"df", self.expression))
 
-        print(df)
+        df_agg = df.groupby(['deviceid'], sort=False)[self.source]
+        df_agg = eval(re.sub(r"\$\{GROUP\}", r"df_agg", self.expression))
 
-        return df
+        return df_agg
 
     @classmethod
     def build_ui(cls):
