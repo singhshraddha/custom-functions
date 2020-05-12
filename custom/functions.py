@@ -77,16 +77,17 @@ class SS_HelloWorldAggregator(BaseSimpleAggregator):
         if expression is None or not isinstance(expression, str):
             raise RuntimeError("argument expression must be provided and must be a string")
 
-        self.source = source
+        # self.source = source
         self.expression = expression
         self.input_items = source
 
-    def execute(self, df):
+    def execute(self, group):
 
-        df_agg = df.groupby(['deviceid'], sort=False)[self.source]
-        df_agg = eval(re.sub(r"\$\{GROUP\}", r"df_agg", self.expression))
+        # df_agg = df.groupby(['deviceid'], sort=False)[self.source]
+        # df_agg = eval(re.sub(r"\$\{GROUP\}", r"df_agg", self.expression))
+        return eval(re.sub(r"\$\{GROUP\}", r"group", self.expression))
 
-        return df_agg
+        # return df_agg
 
     @classmethod
     def build_ui(cls):
