@@ -79,6 +79,7 @@ class SS_HelloWorldAggregator(BaseSimpleAggregator):
 
         self.source = source
         self.expression = expression
+        self.input_items = source
 
     def execute(self, df):
 
