@@ -103,3 +103,42 @@ class SS_HelloWorldAggregator(BaseSimpleAggregator):
                                                     'All Pandas Series methods can be used on the grain.'
                                                     'For example, ${GROUP}.max() - ${GROUP}.min().'))
         return (inputs, [])
+
+
+class SS_SimpleAggregator(BaseSimpleAggregator):
+    '''
+    Create aggregation using expression. The calculation is evaluated for
+    each data_item selected. The data item will be made available as a
+    Pandas Series. Refer to the Pandas series using the local variable named
+    "x". The expression must return a scalar value.
+    Example:
+    x.max() - x.min()
+    '''
+
+    def __init__(self, input_items, expression=None, output_items=None):
+        super().__init__()
+
+        self.input_items = input_items
+        self.expression = expression
+        self.output_items = output_items
+
+    @classmethod
+    def build_ui(cls):
+        inputs = []
+        inputs.append(UIMultiItem(name='input_items', datatype=None, description=('Choose the data items'
+                                                                                  ' that you would like to'
+                                                                                  ' aggregate'),
+                                  output_item='output_items', is_output_datatype_derived=True))
+
+        inputs.append(UIExpression(name='expression', description='Paste in or type an AS expression'))
+
+        return (inputs, [])
+
+    def _calc(self, df):
+        """
+        If the function should be executed separately for each entity, describe the function logic in the _calc method
+        """
+        return df[self.input_items].apply(self.get_aggregation_method())
+
+    def aggregate(self, x):
+        return eval(self.expression)
