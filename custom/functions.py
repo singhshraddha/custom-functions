@@ -79,15 +79,10 @@ class SS_HelloWorldAggregator(BaseSimpleAggregator):
 
         self.source = source
         self.expression = expression
-        self.input_items = source
 
     def execute(self, group):
 
-        # df_agg = df.groupby(['deviceid'], sort=False)[self.source]
-        # df_agg = eval(re.sub(r"\$\{GROUP\}", r"df_agg", self.expression))
         return eval(re.sub(r"\$\{GROUP\}", r"group", self.expression))
-
-        # return df_agg
 
     @classmethod
     def build_ui(cls):
@@ -115,20 +110,19 @@ class SS_SimpleAggregator(BaseSimpleAggregator):
     x.max() - x.min()
     '''
 
-    def __init__(self, input_items, expression=None, output_items=None):
+    def __init__(self, source=None, expression=None):
         super().__init__()
 
-        self.input_items = input_items
+        self.source = source
         self.expression = expression
-        self.output_items = output_items
 
     @classmethod
     def build_ui(cls):
         inputs = []
-        inputs.append(UIMultiItem(name='input_items', datatype=None, description=('Choose the data items'
+        inputs.append(UIMultiItem(name='source', datatype=None, description=('Choose the data items'
                                                                                   ' that you would like to'
                                                                                   ' aggregate'),
-                                  output_item='output_items', is_output_datatype_derived=True))
+                                  output_item='name', is_output_datatype_derived=True))
 
         inputs.append(UIExpression(name='expression', description='Paste in or type an AS expression'))
 
@@ -138,10 +132,4 @@ class SS_SimpleAggregator(BaseSimpleAggregator):
         """
         If the function should be executed separately for each entity, describe the function logic in the _calc method
         """
-        return eval(re.sub(r"\$\{x\}", r"df", self.expression))
-
-
-        # return df[self.input_items].apply(self.get_aggregation_method())
-
-    # def aggregate(self, x):
-    #     return eval(self.expression)
+        return eval(re.sub(r"x", r"df", self.expression))
