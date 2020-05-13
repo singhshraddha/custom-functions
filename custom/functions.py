@@ -113,7 +113,7 @@ class SS_SimpleAggregator(BaseSimpleAggregator):
     def __init__(self, source=None, expression=None):
         super().__init__()
 
-        self.source = source
+        self.input_items = source
         self.expression = expression
 
     @classmethod
