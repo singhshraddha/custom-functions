@@ -138,7 +138,10 @@ class SS_SimpleAggregator(BaseSimpleAggregator):
         """
         If the function should be executed separately for each entity, describe the function logic in the _calc method
         """
-        return df[self.input_items].apply(self.get_aggregation_method())
+        return eval(re.sub(r"\$\{x\}", r"df", self.expression))
 
-    def aggregate(self, x):
-        return eval(self.expression)
+
+        # return df[self.input_items].apply(self.get_aggregation_method())
+
+    # def aggregate(self, x):
+    #     return eval(self.expression)
