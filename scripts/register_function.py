@@ -1,20 +1,16 @@
 #!/user/bin/env python3
-import datetime as dt
 import json
-import pandas as pd
-import numpy as np
 import logging
-from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, func
 from iotfunctions.db import Database
 from iotfunctions.enginelog import EngineLogging
 
 EngineLogging.configure_console_logging(logging.DEBUG)
 
-with open('credentials_as.json', encoding='utf-8') as F:
+with open('./dev_resources/credentials_as_dev.json', encoding='utf-8') as F:
     credentials = json.loads(F.read())
 db_schema = None
 db = Database(credentials=credentials)
 
-from custom.functions import HelloWorld
+from custom.functions import SS_SimpleAggregator
 
-db.register_functions([HelloWorld])
+db.register_functions([SS_SimpleAggregator])

@@ -1,15 +1,9 @@
-import inspect
 import logging
-import datetime as dt
-import math
-from sqlalchemy.sql.sqltypes import TIMESTAMP, VARCHAR
-import numpy as np
-import pandas as pd
 import re
 
+from iotfunctions import ui
 from iotfunctions.base import (BaseTransformer,
                                BaseSimpleAggregator)
-from iotfunctions import ui
 from iotfunctions.ui import (UIMultiItem,
                              UIExpression)
 
@@ -81,7 +75,6 @@ class SS_HelloWorldAggregator(BaseSimpleAggregator):
         self.expression = expression
 
     def execute(self, group):
-
         return eval(re.sub(r"\$\{GROUP\}", r"group", self.expression))
 
     @classmethod
@@ -90,13 +83,13 @@ class SS_HelloWorldAggregator(BaseSimpleAggregator):
         # Input variable name must be kept 'source'
         # Output variable name must be kept 'name'
         inputs.append(UIMultiItem(name='source', datatype=None, description=('Choose the data items'
-                                                                            ' that you would like to'
-                                                                                  ' aggregate'),
+                                                                             ' that you would like to'
+                                                                             ' aggregate'),
                                   output_item='name', is_output_datatype_derived=True))
 
         inputs.append(UIExpression(name='expression', description='Use ${GROUP} to reference the current grain.'
-                                                    'All Pandas Series methods can be used on the grain.'
-                                                    'For example, ${GROUP}.max() - ${GROUP}.min().'))
+                                                                  'All Pandas Series methods can be used on the grain.'
+                                                                  'For example, ${GROUP}.max() - ${GROUP}.min().'))
         return (inputs, [])
 
 
@@ -120,8 +113,8 @@ class SS_SimpleAggregator(BaseSimpleAggregator):
     def build_ui(cls):
         inputs = []
         inputs.append(UIMultiItem(name='source', datatype=None, description=('Choose the data items'
-                                                                                  ' that you would like to'
-                                                                                  ' aggregate'),
+                                                                             ' that you would like to'
+                                                                             ' aggregate'),
                                   output_item='name', is_output_datatype_derived=True))
 
         inputs.append(UIExpression(name='expression', description='Paste in or type an AS expression'))
