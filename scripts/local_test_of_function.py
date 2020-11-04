@@ -17,10 +17,10 @@ Supply credentials by pasting them from the usage section into the UI.
 Place your credentials in a separate file that you don't check into the repo. 
 '''
 
-with open('./dev_resources/credentials_as_dev.json', encoding='utf-8') as F:
+with open('../dev_resources/credentials_as_dev.json', encoding='utf-8') as F:
     credentials = json.loads(F.read())
 db_schema = None
-db = Database(credentials=credentials)
+db = Database(credentials=credentials, entity_type='shraddha_boiler')
 
 
 def local_func_execute(fn):
@@ -35,12 +35,12 @@ def local_func_execute(fn):
     print(df)
     print('-------------------------END OF LOCAL FUNC EXECUTE-------------------------------')
 
-def local_pipeline_execute(fn):
 
+def local_pipeline_execute(fn):
     hourly = Granularity(name='hourly', freq='1H',  # pandas frequency string
-                        timestamp='evt_timestamp',  # build time aggregations using this datetime col
-                        entity_id='id',  # aggregate by id
-                        dimensions=None, entity_name=None)
+                         timestamp='evt_timestamp',  # build time aggregations using this datetime col
+                         entity_id='id',  # aggregate by id
+                         dimensions=None, entity_name=None)
     fn.granularity = hourly
 
     entity_name = 'shraddha_boiler_type_1'
@@ -48,7 +48,7 @@ def local_pipeline_execute(fn):
 
     #add the local function to test
     entity_type._functions.extend([fn])
-    entity_type._granularities_dict={'hourly': hourly}
+    entity_type._granularities_dict = {'hourly': hourly}
 
     entity_type.exec_local_pipeline(**{'_production_mode': False})
 
@@ -64,17 +64,9 @@ def local_pipeline_execute(fn):
 
 
 '''Import and instantiate the functions to be tested '''
-from custom.functions import SS_HelloWorldAggregator
-fn = SS_HelloWorldAggregator(
-        source = ['pressure'],
-        expression = '${GROUP}.max()'
-        )
+#local_pipeline_execute(fn)
 
-from custom.functions import SS_SimpleAggregator
-fn = SS_SimpleAggregator(
-        input_items = ['pressure'],
-        expression = 'x.max()',
-        output_items=['out_pressure']
-        )
+from custom.forecast import Cognio_NeuralNetwork_Forecaster
 
-local_pipeline_execute(fn)
+fn = Cognio_NeuralNetwork_Forecaster(features=['kw_lag_24', 'temp_lag_24'], target='output')
+local_func_execute(fn)

@@ -5,6 +5,7 @@ scripts/credentials.json
 #debug file #
 #############
 scripts/debugPipelineSourceData.csv
+data
 
 # Editor temporary/working/backup files #
 #########################################
@@ -127,3 +128,11 @@ tests/test_merge_dt_test.py
 tests/test_specialization_of_function.py
 tests/test_specialization_of_function.py
 tests/test_broken_functions.py
+
+# virtual env files #
+######################
+bin
+lib
+man
+share
+pyvenv.cfg
