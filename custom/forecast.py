@@ -27,19 +27,21 @@ _IS_PREINSTALLED = False
 
 class Cognio_NeuralNetwork_Forecaster(BaseTransformer):
     """
-    Provides a forecast for 'target' variable using 'features'
+    Provides a forecast for 'target' variable using 'features'. 
     Assumes a trained model exists in the db.
     Uses the same model for all entities
     More information about training and saving the model: TODO add link to notebook
 
     :param features list should be the same as features used to train the model
+    :param saved_model_name srt name of trained model stored in KPI_MODEL_STORE datatable
     :param target str name of the dependent variable
     """
 
-    def __init__(self, features, target):
+    def __init__(self, features, saved_model_name, target):
         super().__init__()
 
         self.features = features
+        self.saved_model_name = saved_model_name
         self.target = target
 
         self.whoami = 'Cognio_NeuralNetwork_Forecaster'
@@ -97,8 +99,7 @@ class Cognio_NeuralNetwork_Forecaster(BaseTransformer):
         Get the pre-trained model "Cognio_NeuralNetwork_Forecaster"
         """
         db = self._entity_type.db
-        model_name = "shraddha_cognio_nn_lm_test"  #TODO
-        model = db.model_store.retrieve_model(model_name)
+        model = db.model_store.retrieve_model(self.saved_model_name)
         if model is not None:
             msg = 'Retrieved existing model from ModelStore'
         else:
@@ -151,7 +152,8 @@ class Cognio_NeuralNetwork_Forecaster(BaseTransformer):
     def build_ui(cls):
 
         # define arguments that behave as function inputs
-        inputs = [ui.UIMultiItem(name='features', datatype=float, description='Predictive features')]
+        inputs = [ui.UIMultiItem(name='features', datatype=float, description='Predictive features'),
+                  ui.UISingleItem(name='saved_model_name', datatype=float, description='Name of the model to use with this forecaster. This model will be retrieved from model store')]
 
         # define arguments that behave as function outputs
         outputs = [ui.UIFunctionOutSingle(name='target', datatype=float, description='Predicted output')]
