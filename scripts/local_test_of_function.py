@@ -68,5 +68,5 @@ def local_pipeline_execute(fn):
 
 from custom.forecast import Cognio_NeuralNetwork_Forecaster
 
-fn = Cognio_NeuralNetwork_Forecaster(features=['kw_lag_24', 'temp_lag_24'], target='output')
+fn = Cognio_NeuralNetwork_Forecaster(features=['kw_lag_24', 'temp_lag_24'], saved_model_name="shraddha_cognio_nn_lm_test", target='output')
 local_func_execute(fn)
