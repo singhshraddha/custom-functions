@@ -27,17 +27,18 @@ _IS_PREINSTALLED = False
 
 class Cognio_NeuralNetwork_Forecaster(BaseTransformer):
     """
-    Provides a forecast for 'target' variable using 'features'. 
-    Assumes a trained model exists in the db.
-    Uses the same model for all entities
-    More information about training and saving the model: TODO add link to notebook
-
-    :param features list should be the same as features used to train the model
-    :param saved_model_name srt name of trained model stored in KPI_MODEL_STORE datatable
-    :param target str name of the dependent variable
+    Provides a forecast saved as 'target' variable using 'features'.
+    Assumes a trained model exists in the db, and uses the same model for all entities
+    More information about training and saving the model visit:
+    https://github.com/singhshraddha/ss-iotfunctions/blob/development/notebooks/Cognio_NeuralNetwork_Forecaster_Train.ipynb
     """
 
     def __init__(self, features, saved_model_name, target):
+        """
+        :param features list should be the same as features used to train the model
+        :param saved_model_name srt name of trained model stored in KPI_MODEL_STORE datatable
+        :param target str name of the dependent variable
+        """
         super().__init__()
 
         self.features = features
