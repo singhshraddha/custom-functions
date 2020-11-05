@@ -1,23 +1,21 @@
-import inspect
 import logging
-import datetime as dt
-import math
-from sqlalchemy.sql.sqltypes import TIMESTAMP, VARCHAR
-import numpy as np
-import pandas as pd
+import re
 
-from iotfunctions.base import BaseTransformer
 from iotfunctions import ui
+from iotfunctions.base import (BaseTransformer,
+                               BaseSimpleAggregator)
+from iotfunctions.ui import (UIMultiItem,
+                             UIExpression)
 
 logger = logging.getLogger(__name__)
 
 # Specify the URL to your package here.
 # This URL must be accessible via pip install
 
-PACKAGE_URL = 'git+https://github.com/singhshraddha/fun-demo@'
+PACKAGE_URL = 'git+https://github.com/singhshraddha/custom-functions@development'
 
 
-class HelloWorld(BaseTransformer):
+class SS_HelloWorld(BaseTransformer):
     '''
     The docstring of the function will show as the function description in the UI.
     '''
@@ -62,3 +60,69 @@ class HelloWorld(BaseTransformer):
         outputs = [
             ui.UIFunctionOutSingle(name='greeting_col', datatype=str, description='Output item produced by function')]
         return (inputs, outputs)
+
+
+class SS_HelloWorldAggregator(BaseSimpleAggregator):
+    '''
+    The docstring of the function will show as the function description in the UI.
+    '''
+
+    def __init__(self, source=None, expression=None):
+        if expression is None or not isinstance(expression, str):
+            raise RuntimeError("argument expression must be provided and must be a string")
+
+        self.source = source
+        self.expression = expression
+
+    def execute(self, group):
+        return eval(re.sub(r"\$\{GROUP\}", r"group", self.expression))
+
+    @classmethod
+    def build_ui(cls):
+        inputs = []
+        # Input variable name must be kept 'source'
+        # Output variable name must be kept 'name'
+        inputs.append(UIMultiItem(name='source', datatype=None, description=('Choose the data items'
+                                                                             ' that you would like to'
+                                                                             ' aggregate'),
+                                  output_item='name', is_output_datatype_derived=True))
+
+        inputs.append(UIExpression(name='expression', description='Use ${GROUP} to reference the current grain.'
+                                                                  'All Pandas Series methods can be used on the grain.'
+                                                                  'For example, ${GROUP}.max() - ${GROUP}.min().'))
+        return (inputs, [])
+
+
+class SS_SimpleAggregator(BaseSimpleAggregator):
+    '''
+    Create aggregation using expression. The calculation is evaluated for
+    each data_item selected. The data item will be made available as a
+    Pandas Series. Refer to the Pandas series using the local variable named
+    "x". The expression must return a scalar value.
+    Example:
+    x.max() - x.min()
+    '''
+
+    def __init__(self, source=None, expression=None):
+        super().__init__()
+
+        self.input_items = source
+        self.expression = expression
+
+    @classmethod
+    def build_ui(cls):
+        inputs = []
+        inputs.append(UIMultiItem(name='source', datatype=None, description=('Choose the data items'
+                                                                             ' that you would like to'
+                                                                             ' aggregate'),
+                                  output_item='name', is_output_datatype_derived=True))
+
+        inputs.append(UIExpression(name='expression', description='Paste in or type an AS expression'))
+
+        return (inputs, [])
+
+    def _calc(self, df):
+        """
+        If the function should be executed separately for each entity, describe the function logic in the _calc method
+        """
+        return eval(re.sub(r"x", r"df", self.expression))
