@@ -82,7 +82,7 @@ class Cognio_NeuralNetwork_Forecaster(BaseTransformer):
 
         # one hot encode and append to the dataframe
         categories = [f'{time_period}_{n}' for n in range(len(one_hot_encoder.categories_[0]))]
-        dfe = dfe.reindex(columns=list(dfe.columns).extend(categories))
+        dfe = dfe.reindex(columns=list(dfe.columns) + categories) # patch work for pipeline fail
         encoded_values = one_hot_encoder.transform(dfe[time_period].values.reshape(-1, 1)).toarray()
         dfe.loc[:, tuple(categories)] = encoded_values
         self.features.extend(categories)
