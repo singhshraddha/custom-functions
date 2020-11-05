@@ -9,6 +9,7 @@
 import logging
 
 import numpy as np
+import pandas as pd
 
 #modeling
 import pyrenn as prn
@@ -81,6 +82,7 @@ class Cognio_NeuralNetwork_Forecaster(BaseTransformer):
 
         # one hot encode and append to the dataframe
         categories = [f'{time_period}_{n}' for n in range(len(one_hot_encoder.categories_[0]))]
+        pd.concat([dfe, pd.DataFrame(columns=categories)])
         encoded_values = one_hot_encoder.transform(dfe[time_period].values.reshape(-1, 1)).toarray()
         dfe.loc[:, tuple(categories)] = encoded_values
         self.features.extend(categories)
