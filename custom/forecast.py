@@ -149,7 +149,7 @@ class Cognio_NeuralNetwork_Forecaster(BaseTransformer):
     def build_ui(cls):
 
         # define arguments that behave as function inputs
-        inputs = [ui.UISingleItem(name='features', datatype=float, description='Predictive features')]
+        inputs = [ui.UIMultiItem(name='features', datatype=float, description='Predictive features')]
 
         # define arguments that behave as function outputs
         outputs = [ui.UIFunctionOutSingle(name='target', datatype=float, description='Predicted output')]
