@@ -7,10 +7,12 @@ from iotfunctions.enginelog import EngineLogging
 EngineLogging.configure_console_logging(logging.DEBUG)
 
 with open('../dev_resources/credentials_as_dev.json', encoding='utf-8') as F:
+#with open('../dev_resources/cognio.json', encoding='utf-8') as F:
     credentials = json.loads(F.read())
 db_schema = None
 db = Database(credentials=credentials)
 
-from custom.forecast import Cognio_NeuralNetwork_Forecaster
+#from custom.forecast import Cognio_NeuralNetwork_Forecaster
+from custom.functions import SS_HelloWorld
 
-db.register_functions([Cognio_NeuralNetwork_Forecaster])
+db.register_functions([SS_HelloWorld])
