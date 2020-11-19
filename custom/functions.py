@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 # This URL must be accessible via pip install
 
 PACKAGE_URL = 'git+https://github.com/singhshraddha/custom-functions@development'
+_IS_PREINSTALLED = False
 
 
 class SS_HelloWorld(BaseTransformer):
@@ -20,33 +21,26 @@ class SS_HelloWorld(BaseTransformer):
     The docstring of the function will show as the function description in the UI.
     '''
 
-    def __init__(self, name, greeting_col):
+    def __init__(self, input_item, output_item_append):
         # a function is expected to have at least one parameter that acts
-        # as an input argument, e.g. "name" is an argument that represents the
-        # name to be used in the greeting. It is an "input" as it is something
-        # that the function needs to execute.
-
         # a function is expected to have at lease one parameter that describes
-        # the output data items produced by the function, e.g. "greeting_col"
-        # is the argument that asks what data item name should be used to
-        # deliver the functions outputs
-
+        # the output data items produced by the function
         # always create an instance variable with the same name as your arguments
 
-        self.name = name
-        self.greeting_col = greeting_col
+        self.input_item = input_item
+        self.output_item_append = output_item_append
         super().__init__()
-
-        # do not place any business logic in the __init__ method  # all business logic goes into the execute() method or methods called by the  # execute() method
 
     def execute(self, df):
         # the execute() method accepts a dataframe as input and returns a dataframe as output
         # the output dataframe is expected to produce at least one new output column
 
-        df[self.greeting_col] = 'Hello %s' % self.name
+        output_columns = ['A', 'B', 'C']
+        for i,o in enumerate(output_columns):
+            output_columns[i] = o + self.output_item_append
 
-        # If the function has no new output data, output a status_flag instead
-        # e.g. df[<self.output_col_arg>> = True
+        for i, o in enumerate(output_columns):
+            df[o] = i
 
         return df
 
@@ -56,9 +50,10 @@ class SS_HelloWorld(BaseTransformer):
         # This method describes the contents of the dialog that will be built
         # Account for each argument - specifying it as a ui object in the "inputs" or "outputs" list
 
-        inputs = [ui.UISingle(name='name', datatype=str, description='Name of person to greet')]
-        outputs = [
-            ui.UIFunctionOutSingle(name='greeting_col', datatype=str, description='Output item produced by function')]
+        inputs = [(ui.UISingleItem(name='input_item', datatype=None,
+                                  description='Data items that have conditional values, e.g. temp and pressure'))]
+        outputs = [ui.UIFunctionOutSingle(name='output_item_append', datatype=str,
+                                          description='Output item produced by function')]
         return (inputs, outputs)
 
 

@@ -9,6 +9,7 @@
 import logging
 
 import numpy as np
+import pandas as pd
 
 #modeling
 import pyrenn as prn
@@ -26,19 +27,22 @@ _IS_PREINSTALLED = False
 
 class Cognio_NeuralNetwork_Forecaster(BaseTransformer):
     """
-    Provides a forecast for 'target' variable using 'features'
-    Assumes a trained model exists in the db.
-    Uses the same model for all entities
-    More information about training and saving the model: TODO add link to notebook
-
-    :param features list should be the same as features used to train the model
-    :param target str name of the dependent variable
+    Provides a forecast saved as 'target' variable using 'features'.
+    Assumes a trained model exists in the db, and uses the same model for all entities
+    More information about training and saving the model visit:
+    https://github.com/singhshraddha/ss-iotfunctions/blob/development/notebooks/Cognio_NeuralNetwork_Forecaster_Train.ipynb
     """
 
-    def __init__(self, features, target):
+    def __init__(self, features, saved_model_name, target):
+        """
+        :param features list should be the same as features used to train the model
+        :param saved_model_name srt name of trained model stored in KPI_MODEL_STORE datatable
+        :param target str name of the dependent variable
+        """
         super().__init__()
 
         self.features = features
+        self.saved_model_name = saved_model_name
         self.target = target
 
         self.whoami = 'Cognio_NeuralNetwork_Forecaster'
@@ -81,6 +85,7 @@ class Cognio_NeuralNetwork_Forecaster(BaseTransformer):
 
         # one hot encode and append to the dataframe
         categories = [f'{time_period}_{n}' for n in range(len(one_hot_encoder.categories_[0]))]
+        dfe = dfe.reindex(columns=list(dfe.columns) + categories) # patch work for pipeline fail
         encoded_values = one_hot_encoder.transform(dfe[time_period].values.reshape(-1, 1)).toarray()
         dfe.loc[:, tuple(categories)] = encoded_values
         self.features.extend(categories)
@@ -95,8 +100,7 @@ class Cognio_NeuralNetwork_Forecaster(BaseTransformer):
         Get the pre-trained model "Cognio_NeuralNetwork_Forecaster"
         """
         db = self._entity_type.db
-        model_name = "shraddha_cognio_nn_lm_test"  #TODO
-        model = db.model_store.retrieve_model(model_name)
+        model = db.model_store.retrieve_model(self.saved_model_name)
         if model is not None:
             msg = 'Retrieved existing model from ModelStore'
         else:
@@ -149,9 +153,10 @@ class Cognio_NeuralNetwork_Forecaster(BaseTransformer):
     def build_ui(cls):
 
         # define arguments that behave as function inputs
-        inputs = [ui.UISingleItem(name='features', datatype=float, description='Predictive features'),
-                  ui.UISingle(name='n_forecast', datatype=int, description='Forecasting n_forecast data points.')]
+        inputs = [ui.UIMultiItem(name='features', datatype=float, description='Predictive features'),
+                  ui.UISingle(name='saved_model_name', datatype=str, description='Name of the model to use with '
+                                                                                   'this forecaster. This model will be retrieved from model store')]
 
         # define arguments that behave as function outputs
-        outputs = [ui.UIFunctionOutSingle(name='output_item', datatype=float, description='Interpolated data')]
+        outputs = [ui.UIFunctionOutSingle(name='target', datatype=float, description='Predicted output')]
         return inputs, outputs

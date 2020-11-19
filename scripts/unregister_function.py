@@ -6,9 +6,9 @@ from iotfunctions.enginelog import EngineLogging
 
 EngineLogging.configure_console_logging(logging.DEBUG)
 
-with open('./dev_resources/credentials_as_dev.json', encoding='utf-8') as F:
+with open('../dev_resources/credentials_as_dev.json', encoding='utf-8') as F:
     credentials = json.loads(F.read())
 db_schema = None
 db = Database(credentials=credentials)
 
-db.unregister_functions(['SS_SimpleAggregator'])
+db.unregister_functions(['MultiplyByFactorSS'])
