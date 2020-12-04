@@ -16,7 +16,7 @@ import datetime as dt
 #modeling
 import stumpy
 
-from iotfunctions import ui, util
+from iotfunctions import ui
 from iotfunctions.base import (BaseTransformer)
 
 logger = logging.getLogger(__name__)
@@ -92,6 +92,7 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
         # check data type
         if df_copy[self.input_item].dtype != np.float64:
             return df_copy
+        logger.debug(f'Df copy data types {df_copy.dtypes}')
 
         for entity in entities:
             # per entity - copy for later inplace operations
@@ -107,7 +108,7 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
 
             # minimal time delta for merging
             mindelta, dfe_orig = min_delta(dfe_orig)
-            util.log_data_frame(dfe.head())
+            logger.debug(f'Dfe data types {dfe.dtypes}')
 
             matrix_profile = stumpy.aamp(dfe[self.input_item], m=self.window_size)[:, 0]
             # fill in small value for newer data points with < window_size num data points following them
