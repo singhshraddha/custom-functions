@@ -84,6 +84,29 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
         self.output_item = output_item
         self.whoami = 'MatrixProfile'
 
+    def prepare_data(self, dfEntity):
+
+        logger.debug(self.whoami + ': prepare Data')
+
+        # operate on simple timestamp index
+        if len(dfEntity.index.names) > 1:
+            index_names = dfEntity.index.names
+            dfe = dfEntity.reset_index().set_index(index_names[0])
+        else:
+            index_names = None
+            dfe = dfEntity
+
+        # interpolate gaps - data imputation
+        try:
+            dfe = dfe.interpolate(method="time")
+        except Exception as e:
+            logger.error('Prepare data error: ' + str(e))
+
+        # one dimensional time series
+        analysis_input = dfe[[self.input_item]].fillna(0).to_numpy(dtype=np.float64).reshape(-1, )
+
+        return dfe, analysis_input
+
     def execute(self, df):
         df_copy = df.copy()
         entities = np.unique(df_copy.index.levels[0])
@@ -108,10 +131,9 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
 
             # minimal time delta for merging
             mindelta, dfe_orig = min_delta(dfe_orig)
-            
-            logger.debug(dfe[self.input_item])
 
-            matrix_profile = stumpy.aamp(dfe[self.input_item], m=self.window_size)[:, 0]
+            dfe, matrix_profile_input = self.prepare_data(dfe)
+            matrix_profile = stumpy.aamp(matrix_profile_input, m=self.window_size)[:, 0]
             # fill in small value for newer data points with < window_size num data points following them
             fillers = np.array([self.DATAPOINTS_AFTER_LAST_WINDOW] * (self.window_size - 1))
             matrix_profile = np.append(matrix_profile, fillers)

@@ -6,8 +6,8 @@ from iotfunctions.enginelog import EngineLogging
 from iotfunctions.metadata import Granularity
 from iotfunctions import util
 
-util.setup_logging(as_log_level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+#util.setup_logging(as_log_level=logging.DEBUG)
+#logger = logging.getLogger(__name__)
 
 '''
 You can test functions locally before registering them on the server to
