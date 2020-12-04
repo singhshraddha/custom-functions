@@ -121,6 +121,7 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
             # per entity - copy for later inplace operations
             dfe = df_copy.loc[[entity]].dropna(how='all')
             dfe_orig = df_copy.loc[[entity]].copy()
+            logger.debug(f' Original df shape: {df_copy.shape} Entity df shape: {dfe.shape}')
 
             # get rid of entityid part of the index
             # do it inplace as we copied the data before
