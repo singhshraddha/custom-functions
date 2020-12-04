@@ -12,7 +12,6 @@ with open('../dev_resources/credentials_as_dev.json', encoding='utf-8') as F:
 db_schema = None
 db = Database(credentials=credentials)
 
-#from custom.forecast import Cognio_NeuralNetwork_Forecaster
-from custom.functions import SS_HelloWorld
+from custom.forecast import Cognio_NeuralNetwork_Forecaster
 
-db.register_functions([SS_HelloWorld])
+db.register_functions([Cognio_NeuralNetwork_Forecaster])

@@ -11,17 +11,15 @@ logger = logging.getLogger(__name__)
 
 # Specify the URL to your package here.
 # This URL must be accessible via pip install
-
 PACKAGE_URL = 'git+https://github.com/singhshraddha/custom-functions@development'
-_IS_PREINSTALLED = False
 
 
 class SS_HelloWorld(BaseTransformer):
-    '''
+    """
     The docstring of the function will show as the function description in the UI.
-    '''
+    """
 
-    def __init__(self, input_item, output_item_append):
+    def __init__(self, input_item, output_item_append, cardinalityForm):
         # a function is expected to have at least one parameter that acts
         # a function is expected to have at lease one parameter that describes
         # the output data items produced by the function
@@ -37,10 +35,10 @@ class SS_HelloWorld(BaseTransformer):
 
         output_columns = ['A', 'B', 'C']
         for i,o in enumerate(output_columns):
-            output_columns[i] = o + self.output_item_append
+            df[o + self.output_item_append] = i
 
-        for i, o in enumerate(output_columns):
-            df[o] = i
+
+        logger.debug(f'df: {df}')
 
         return df
 
@@ -52,9 +50,9 @@ class SS_HelloWorld(BaseTransformer):
 
         inputs = [(ui.UISingleItem(name='input_item', datatype=None,
                                   description='Data items that have conditional values, e.g. temp and pressure'))]
-        outputs = [ui.UIFunctionOutSingle(name='output_item_append', datatype=str,
+        outputs = [ui.UIFunctionOutMulti(name='_min', cardinality_from='', datatype=str,
                                           description='Output item produced by function')]
-        return (inputs, outputs)
+        return inputs, outputs
 
 
 class SS_HelloWorldAggregator(BaseSimpleAggregator):

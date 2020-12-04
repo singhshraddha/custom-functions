@@ -8,7 +8,7 @@ from iotfunctions.db import Database
 from iotfunctions.enginelog import EngineLogging
 from iotfunctions.metadata import Granularity
 
-EngineLogging.configure_console_logging(logging.DEBUG)
+#EngineLogging.configure_console_logging(logging.DEBUG)
 
 '''
 You can test functions locally before registering them on the server to
@@ -66,12 +66,7 @@ def local_pipeline_execute(fn):
 '''Import and instantiate the functions to be tested '''
 #local_pipeline_execute(fn)
 
-# from custom.forecast import Cognio_NeuralNetwork_Forecaster
-# 
-# fn = Cognio_NeuralNetwork_Forecaster(features=['kw_lag_24', 'temp_lag_24'], saved_model_name="shraddha_cognio_nn_lm_test", target='output')
-# local_func_execute(fn)
+from custom.unsupervised_anomaly import MatrixProfileAnomalyScore
 
-from custom.functions import SS_HelloWorld
-
-fn = SS_HelloWorld(input_item='input_item', output_item_append='_minutes')
+fn = MatrixProfileAnomalyScore(input_item='input', output_item='anomaly_score', window_size=12)
 local_func_execute(fn)
