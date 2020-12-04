@@ -20,6 +20,8 @@ from iotfunctions import ui
 from iotfunctions.base import (BaseTransformer)
 
 logger = logging.getLogger(__name__)
+numba_logger = logging.getLogger('numba')
+numba_logger.setLevel(logging.WARNING)
 
 # Specify the URL to your package here.
 # This URL must be accessible via pip install
@@ -70,10 +72,15 @@ def merge_score(dfEntity, dfEntityOrig, column_name, score, mindelta):
 
 class MatrixProfileAnomalyScoreTest(BaseTransformer):
     """
-    TODO: add description
+    An unsupervised anomaly detection function.
+     Applies matrix profile analysis on time series data.
+     Moves a sliding window across the data signal to calculate the euclidean distance one window to every other.
+     The window size is typically set to 12 data points.
+     Try several anomaly models on your data and use the one that fits your data best.
     """
     DATAPOINTS_AFTER_LAST_WINDOW = 1e-15
     INIT_SCORES = 1e-20
+    ERROR_SCORES = 1e-16
 
     def __init__(self, input_item, output_item, window_size=12):
         super().__init__()
@@ -84,17 +91,17 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
         self.output_item = output_item
         self.whoami = 'MatrixProfile'
 
-    def prepare_data(self, dfEntity):
+    def prepare_data(self, df_entity):
 
         logger.debug(self.whoami + ': prepare Data')
 
         # operate on simple timestamp index
-        if len(dfEntity.index.names) > 1:
-            index_names = dfEntity.index.names
-            dfe = dfEntity.reset_index().set_index(index_names[0])
+        if len(df_entity.index.names) > 1:
+            index_names = df_entity.index.names
+            dfe = df_entity.reset_index().set_index(index_names[0])
         else:
             index_names = None
-            dfe = dfEntity
+            dfe = df_entity
 
         # interpolate gaps - data imputation
         try:
@@ -123,7 +130,7 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
             dfe_orig = df_copy.loc[[entity]].copy()
             logger.debug(f' Original df shape: {df_copy.shape} Entity df shape: {dfe.shape}')
 
-            # get rid of entityid part of the index
+            # get rid of entity_id part of the index
             # do it inplace as we copied the data before
             dfe.reset_index(level=[0], inplace=True)
             dfe.sort_index(inplace=True)
@@ -133,16 +140,20 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
             # minimal time delta for merging
             mindelta, dfe_orig = min_delta(dfe_orig)
 
-            # interpolate gaps - data imputation by default
-            dfe, matrix_profile_input = self.prepare_data(dfe)
-
-            logger.debug(f'{matrix_profile_input}')
-
-            # calculate scores
-            matrix_profile = stumpy.aamp(matrix_profile_input, m=self.window_size)[:, 0]
-            # fill in small value for newer data points with < window_size num data points following them
-            fillers = np.array([self.DATAPOINTS_AFTER_LAST_WINDOW] * (self.window_size - 1))
-            matrix_profile = np.append(matrix_profile, fillers)
+            if dfe.size >= self.window_size:
+                # interpolate gaps - data imputation by default
+                dfe, matrix_profile_input = self.prepare_data(dfe)
+                try:  # calculate scores
+                    matrix_profile = stumpy.aamp(matrix_profile_input, m=self.window_size)[:, 0]
+                    # fill in a small value for newer data points outside the last possible window
+                    fillers = np.array([self.DATAPOINTS_AFTER_LAST_WINDOW] * (self.window_size - 1))
+                    matrix_profile = np.append(matrix_profile, fillers)
+                except Exception as er:
+                    logger.warning(f' Error in calculating Matrix Profile Scores \n{er}')
+                    matrix_profile = [self.ERROR_SCORES] * dfe.size
+            else:
+                logger.warning(f' Not enough data to calculate Matrix Profile for entity \n{entity}')
+                matrix_profile = [self.ERROR_SCORES] * dfe.size
 
             anomaly_score = merge_score(dfe, dfe_orig, self.output_item, matrix_profile, mindelta)
 
