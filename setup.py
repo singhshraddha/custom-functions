@@ -25,7 +25,8 @@ setup(
         'sqlalchemy==1.3.10',
         'tabulate==0.8.5',
         'pyarrow==0.17.1',
-        'pyrenn==0.1'
+        'pyrenn==0.1',
+        'stumpy==1.5.0'
     ],
     extras_require = {
         'kafka':  ['confluent-kafka==0.11.5']
