@@ -125,7 +125,7 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
     def build_ui(cls):
         # define arguments that behave as function inputs
         inputs = [ui.UISingleItem(name="input_item", datatype=float, description="Time series data item to analyze", ),
-                  ui.UISingle(name="window_size", datatype=int, required=False,
+                  ui.UISingle(name="window_size", datatype=int,
                               description="Size of each sliding window in data points. Set to 12 by default")]
 
         # define arguments that behave as function outputs
