@@ -108,8 +108,10 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
 
             # minimal time delta for merging
             mindelta, dfe_orig = min_delta(dfe_orig)
+            
+            logger.debug(dfe[self.input_item])
 
-            matrix_profile = stumpy.aamp(dfe[[self.input_item]].fillna(0).to_numpy(dtype=np.float64), m=self.window_size)[:, 0]
+            matrix_profile = stumpy.aamp(dfe[self.input_item], m=self.window_size)[:, 0]
             # fill in small value for newer data points with < window_size num data points following them
             fillers = np.array([self.DATAPOINTS_AFTER_LAST_WINDOW] * (self.window_size - 1))
             matrix_profile = np.append(matrix_profile, fillers)
