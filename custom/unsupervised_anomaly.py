@@ -73,6 +73,7 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
     TODO: add description
     """
     NOT_ENOUGH_DATAPOINTS = 1e-15
+    INIT_SCORES = 1e-20
 
     def __init__(self, input_item, output_item, window_size=12):
         super().__init__()
@@ -87,7 +88,7 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
         df_copy = df.copy()
         entities = np.unique(df_copy.index.levels[0])
         logger.debug(f'Entities: {str(entities)}')
-        df_copy[self.output_item] = 0
+        df_copy[self.output_item] = self.INIT_SCORES
 
         # check data type
         if df_copy[self.input_item].dtype != np.float64:
