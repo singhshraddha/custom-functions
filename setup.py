@@ -9,7 +9,7 @@ setup(
     install_requires=[
         'dill==0.3.0',
         'numpy>=1.17.3',
-        'pandas>=0.24.0',
+        'pandas>=1.1.4',
         'scikit-learn==0.20.3',
         'scipy>=1.1.0',
         'requests==2.23.0',
