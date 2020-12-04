@@ -135,6 +135,8 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
             # interpolate gaps - data imputation by default
             dfe, matrix_profile_input = self.prepare_data(dfe)
 
+            logger.debug(f'{matrix_profile_input}')
+
             # calculate scores
             matrix_profile = stumpy.aamp(matrix_profile_input, m=self.window_size)[:, 0]
             # fill in small value for newer data points with < window_size num data points following them
