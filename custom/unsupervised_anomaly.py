@@ -16,7 +16,7 @@ import datetime as dt
 #modeling
 import stumpy
 
-from iotfunctions import ui
+from iotfunctions import ui, util
 from iotfunctions.base import (BaseTransformer)
 
 logger = logging.getLogger(__name__)
@@ -107,6 +107,7 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
 
             # minimal time delta for merging
             mindelta, dfe_orig = min_delta(dfe_orig)
+            util.log_data_frame(dfe.head())
 
             matrix_profile = stumpy.aamp(dfe[self.input_item], m=self.window_size)[:, 0]
             # fill in small value for newer data points with < window_size num data points following them

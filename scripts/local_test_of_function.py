@@ -1,14 +1,13 @@
-import datetime as dt
 import json
-import pandas as pd
-import numpy as np
 import logging
-from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, func
+
 from iotfunctions.db import Database
 from iotfunctions.enginelog import EngineLogging
 from iotfunctions.metadata import Granularity
+from iotfunctions import util
 
-#EngineLogging.configure_console_logging(logging.DEBUG)
+util.setup_logging(as_log_level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 '''
 You can test functions locally before registering them on the server to
@@ -66,7 +65,7 @@ def local_pipeline_execute(fn):
 '''Import and instantiate the functions to be tested '''
 #local_pipeline_execute(fn)
 
-from custom.unsupervised_anomaly import MatrixProfileAnomalyScore
+from custom.unsupervised_anomaly import MatrixProfileAnomalyScoreTest
 
-fn = MatrixProfileAnomalyScore(input_item='input', output_item='anomaly_score', window_size=12)
+fn = MatrixProfileAnomalyScoreTest(input_item='input', output_item='anomaly_score', window_size=12)
 local_func_execute(fn)
