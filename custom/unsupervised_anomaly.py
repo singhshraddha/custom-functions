@@ -109,7 +109,7 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
             # minimal time delta for merging
             mindelta, dfe_orig = min_delta(dfe_orig)
 
-            matrix_profile = stumpy.stump(dfe[self.input_item], m=self.window_size)[:, 0]
+            matrix_profile = stumpy.aamp(dfe[self.input_item], m=self.window_size)[:, 0]
             # fill in small value for newer data points with < window_size num data points following them
             fillers = np.array([self.NOT_ENOUGH_DATAPOINTS] * (self.window_size - 1))
             matrix_profile = np.append(matrix_profile, fillers)
@@ -125,8 +125,8 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
     def build_ui(cls):
         # define arguments that behave as function inputs
         inputs = [ui.UISingleItem(name="input_item", datatype=float, description="Time series data item to analyze", ),
-                  ui.UISingle(name="window_size", datatype=int,
-                              description="Size of each sliding window in data points. Typically set to 12.")]
+                  ui.UISingle(name="window_size", datatype=int, required=False,
+                              description="Size of each sliding window in data points. Set to 12 by default")]
 
         # define arguments that behave as function outputs
         outputs = [ui.UIFunctionOutSingle(name="output_item", datatype=float,
