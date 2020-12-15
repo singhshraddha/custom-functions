@@ -149,10 +149,10 @@ class MatrixProfileAnomalyScoreTest(BaseTransformer):
                     fillers = np.array([self.DATAPOINTS_AFTER_LAST_WINDOW] * (self.window_size - 1))
                     matrix_profile = np.append(matrix_profile, fillers)
                 except Exception as er:
-                    logger.warning(f' Error in calculating Matrix Profile Scores \n{er}')
+                    logger.warning(f' Error in calculating Matrix Profile Scores. {er}')
                     matrix_profile = np.array([self.ERROR_SCORES] * dfe.shape[0])
             else:
-                logger.warning(f' Not enough data to calculate Matrix Profile for entity \n{entity}')
+                logger.warning(f' Not enough data to calculate Matrix Profile for entity. {entity}')
                 matrix_profile = np.array([self.ERROR_SCORES] * dfe.shape[0])
 
             anomaly_score = merge_score(dfe, dfe_orig, self.output_item, matrix_profile, mindelta)
