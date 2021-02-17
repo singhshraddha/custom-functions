@@ -3,8 +3,12 @@ import re
 
 from iotfunctions import ui
 from iotfunctions.base import (BaseTransformer,
-                               BaseSimpleAggregator)
-from iotfunctions.ui import (UIMultiItem,
+                               BaseSimpleAggregator,
+                               BaseComplexAggregator)
+from iotfunctions.ui import (UISingleItem,
+                             UIMulti,
+                             UIFunctionOutMulti,
+                             UIMultiItem,
                              UIExpression)
 
 logger = logging.getLogger(__name__)
@@ -119,3 +123,36 @@ class SS_SimpleAggregator(BaseSimpleAggregator):
         If the function should be executed separately for each entity, describe the function logic in the _calc method
         """
         return eval(re.sub(r"x", r"df", self.expression))
+
+
+class SS_ComplexAggregator(BaseComplexAggregator):
+    '''
+    Create aggregation using expression. The calculation is evaluated for
+    each data_item selected. The data item will be made available as a
+    Pandas Series. Refer to the Pandas series using the local variable named
+    "x". The expression must return a scalar value.
+    Example:
+    x.max() - x.min()
+    '''
+
+    def __init__(self, source=None, quality_checks=None):
+        super().__init__()
+
+        self.input_items = source
+        self.quality_checks = quality_checks
+
+    @classmethod
+    def build_ui(cls):
+        inputs = [UISingleItem(name='source', datatype=None,
+                               description='Choose data item to run data quality checks on'),
+                  UIMulti(name='quality_checks', description='Choose quality checks to run', output_item='name',
+                          values=['check_1', 'check_2', 'check_3'], is_output_datatype_derived=True)]
+
+        return inputs, []
+
+    def execute(self, group):
+        """
+        Called on df.groupby 
+        """
+        return group.mean()
+
