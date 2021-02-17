@@ -9,6 +9,6 @@ with open('../dev_resources/credentials_iotls.json', encoding='utf-8') as F:
 db_schema = None
 db = Database(credentials=credentials)
 
-from iotfunctions.anomaly import BayesRidgeRegressor
+from custom.supervised import BayesRidgeRegressor
 
 db.register_functions([BayesRidgeRegressor])
