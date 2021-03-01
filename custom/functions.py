@@ -10,6 +10,7 @@ from iotfunctions.ui import (UISingleItem,
                              UIFunctionOutMulti,
                              UIMultiItem,
                              UIExpression)
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
@@ -140,6 +141,7 @@ class SS_ComplexAggregator(BaseComplexAggregator):
 
         self.input_items = source
         self.quality_checks = quality_checks
+        self.output_items = name 
         logger.debug(f'quality check {quality_checks}  output {name}')
 
     @classmethod
@@ -156,5 +158,8 @@ class SS_ComplexAggregator(BaseComplexAggregator):
         """
         Called on df.groupby 
         """
-        return group.mean()
+        df = group
+        for output in self.output_items:
+            df[output] = df.mean()
+        return df
 
