@@ -158,8 +158,8 @@ class SS_ComplexAggregator(BaseComplexAggregator):
         """
         Called on df.groupby 
         """
-        df = group
+        df = group.copy()
         for output in self.output_items:
-            df[output] = df.mean()
+            df[output] = group.mean()
         return df
 
