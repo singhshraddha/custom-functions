@@ -145,9 +145,9 @@ class SS_ComplexAggregator(BaseComplexAggregator):
     def build_ui(cls):
         inputs = [UISingleItem(name='source', datatype=None,
                                description='Choose data item to run data quality checks on'),
-                  UIMulti(name='quality_checks', datatype=None, description='Choose quality checks to run',
+                  UIMulti(name='quality_checks', datatype=str, description='Choose quality checks to run',
                           output_item='name', values=['check_1', 'check_2', 'check_3'],
-                          is_output_datatype_derived=True)]
+                          is_output_datatype_derived=True, output_datatype=float)]
 
         return inputs, []
 
