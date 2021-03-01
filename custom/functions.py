@@ -146,7 +146,7 @@ class SS_ComplexAggregator(BaseComplexAggregator):
         inputs = [UISingleItem(name='source', datatype=None,
                                description='Choose data item to run data quality checks on'),
                   UIMulti(name='quality_checks', datatype=str, description='Choose quality checks to run',
-                          values=['check_1', 'check_2', 'check_3'], output_item='output',
+                          values=['check_1', 'check_2', 'check_3'], output_item='name',
                           is_output_datatype_derived=True, output_datatype=float)]
 
         return inputs, []
