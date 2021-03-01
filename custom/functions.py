@@ -135,18 +135,19 @@ class SS_ComplexAggregator(BaseComplexAggregator):
     x.max() - x.min()
     '''
 
-    def __init__(self, source=None, quality_checks=None):
+    def __init__(self, source=None, quality_checks=None, output=None):
         super().__init__()
 
         self.input_items = source
         self.quality_checks = quality_checks
+        logger.debug(f'quality check {quality_checks}  output {output}')
 
     @classmethod
     def build_ui(cls):
         inputs = [UISingleItem(name='source', datatype=None,
                                description='Choose data item to run data quality checks on'),
                   UIMulti(name='quality_checks', datatype=str, description='Choose quality checks to run',
-                          values=['check_1', 'check_2', 'check_3'], output_item='name',
+                          values=['check_1', 'check_2', 'check_3'], output_item='output',
                           is_output_datatype_derived=True, output_datatype=float)]
 
         return inputs, []
