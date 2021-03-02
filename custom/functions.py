@@ -142,7 +142,7 @@ class SS_ComplexAggregator(BaseComplexAggregator):
         self.input_items = source
         self.quality_checks = quality_checks
         self.output_items = name 
-        logger.debug(f'quality check {quality_checks}  output {name}')
+        #logger.debug(f'quality check {quality_checks}  output {name}')
 
     @classmethod
     def build_ui(cls):
@@ -158,17 +158,14 @@ class SS_ComplexAggregator(BaseComplexAggregator):
         """
         Called on df.groupby
         """
-        print(f'group shape: {group.shape}')
         df_dict = {}
         for i, output in enumerate(self.output_items):
             if i == 0:
-                df_dict[output] = [group[self.input_items].agg('min')]
+                df_dict[output] = group[self.input_items].agg('min')
             elif i == 1:
-                df_dict[output] = [group[self.input_items].agg('max')]
+                df_dict[output] = group[self.input_items].agg('max')
             else:
-                df_dict[output] = [group[self.input_items].agg('max')]
+                df_dict[output] = group[self.input_items].agg('max')
 
-        df = pd.DataFrame(df_dict)
-        print(f'df shape: {df.shape}')
-        return df
+        return pd.Series(df_dict, index=self.output_items)
 

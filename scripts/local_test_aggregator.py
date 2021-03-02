@@ -19,3 +19,5 @@ df = pd.DataFrame(data)
 groups = df.groupby(['id'])
 
 out = groups.apply(fn.execute)
+
+exit(0)
