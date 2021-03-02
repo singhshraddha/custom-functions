@@ -159,7 +159,7 @@ class SS_ComplexAggregator(BaseComplexAggregator):
         Called on df.groupby
         """
         logger.debug(f'group shape: {group.shape}')
-        df = group.copy()
+        df = pd.DataFrame()
         for i, output in enumerate(self.output_items):
             if i == 0:
                 df[output] = df[self.input_items].mean()
