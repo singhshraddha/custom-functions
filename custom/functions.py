@@ -158,6 +158,7 @@ class SS_ComplexAggregator(BaseComplexAggregator):
         """
         Called on df.groupby
         """
+        logger.debug(group)
         df = group.copy()
         for i, output in enumerate(self.output_items):
             if i == 0:
@@ -166,5 +167,6 @@ class SS_ComplexAggregator(BaseComplexAggregator):
                 df[output] = df[self.input_items].sum()
             else:
                 df[output] = df[self.input_items].max()
+        logger.debug(df)
         return df
 
