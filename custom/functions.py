@@ -158,15 +158,17 @@ class SS_ComplexAggregator(BaseComplexAggregator):
         """
         Called on df.groupby
         """
-        logger.debug(f'group shape: {group.shape}')
-        df = pd.DataFrame(columns=self.output_items)
+        print(f'group shape: {group.shape}')
+        df_dict = {}
         for i, output in enumerate(self.output_items):
             if i == 0:
-                df[output] = group[self.input_items].agg('min')
+                df_dict[output] = [group[self.input_items].agg('min')]
             elif i == 1:
-                df[output] = group[self.input_items].agg('max')
+                df_dict[output] = [group[self.input_items].agg('max')]
             else:
-                df[output] = group[self.input_items].agg('max')
-        logger.debug(f'df shape: {df.shape}')
+                df_dict[output] = [group[self.input_items].agg('max')]
+
+        df = pd.DataFrame(df_dict)
+        print(f'df shape: {df.shape}')
         return df
 

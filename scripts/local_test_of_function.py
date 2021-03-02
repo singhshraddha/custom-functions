@@ -67,5 +67,9 @@ def local_pipeline_execute(fn):
 
 from custom.unsupervised_anomaly import MatrixProfileAnomalyScoreTest
 
+# fn = MatrixProfileAnomalyScoreTest(input_item='input', output_item='anomaly_score', window_size=12)
+# local_func_execute(fn)
+
+from custom.functions import SS_ComplexAggregator
+
 fn = MatrixProfileAnomalyScoreTest(input_item='input', output_item='anomaly_score', window_size=12)
-local_func_execute(fn)
