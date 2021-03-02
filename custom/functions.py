@@ -162,11 +162,11 @@ class SS_ComplexAggregator(BaseComplexAggregator):
         df = pd.DataFrame()
         for i, output in enumerate(self.output_items):
             if i == 0:
-                df[output] = df[self.input_items].mean()
+                df[output] = group[self.input_items].mean()
             elif i == 1:
-                df[output] = df[self.input_items].sum()
+                df[output] = group[self.input_items].sum()
             else:
-                df[output] = df[self.input_items].max()
+                df[output] = group[self.input_items].max()
         logger.debug(f'df shape: {df.shape}')
         return df
 
