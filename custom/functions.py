@@ -159,14 +159,14 @@ class SS_ComplexAggregator(BaseComplexAggregator):
         Called on df.groupby
         """
         logger.debug(f'group shape: {group.shape}')
-        df = pd.DataFrame()
+        df = pd.DataFrame(columns=self.output_items)
         for i, output in enumerate(self.output_items):
             if i == 0:
-                df[output] = group[self.input_items].mean()
+                df[output] = group[self.input_items].agg('min')
             elif i == 1:
-                df[output] = group[self.input_items].sum()
+                df[output] = group[self.input_items].agg('max')
             else:
-                df[output] = group[self.input_items].max()
+                df[output] = group[self.input_items].agg('max')
         logger.debug(f'df shape: {df.shape}')
         return df
 
