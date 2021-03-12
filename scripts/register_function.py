@@ -10,10 +10,10 @@ with open('../dev_resources/credentials_as_dev.json', encoding='utf-8') as F:
 db_schema = None
 db = Database(credentials=credentials)
 
-from custom.functions import SS_ComplexAggregator
+from custom.data_quality import SS_DataQualityChecks
 
 try:
-    db.unregister_functions(['SS_ComplexAggregator'])
+    db.unregister_functions(['SS_DataQualityChecks'])
 except:
     pass
-db.register_functions([SS_ComplexAggregator])
+db.register_functions([SS_DataQualityChecks])

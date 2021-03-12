@@ -54,7 +54,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
                                description='Choose data item to run data quality checks on'),
                   UIMulti(name='quality_checks', datatype=str, description='Choose quality checks to run',
                           values=cls.QUALITY_CHECKS, output_item='name',
-                          is_output_datatype_derived=True, output_datatype=float)]
+                          is_output_datatype_derived=True)]
 
         return inputs, []
 

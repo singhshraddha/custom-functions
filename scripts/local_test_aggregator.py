@@ -15,8 +15,6 @@ QUALITY_CHECKS = ['constant_value',
                   'stuck_at_zero',
                   'white_noise'
                   ]
-
-"constant_value", "sample_entropy", "stationarity", "stuck_at_zero", "white_noise"
 fn = DataQualityChecks(source='input', quality_checks=QUALITY_CHECKS,
                        name=QUALITY_CHECKS)
 
