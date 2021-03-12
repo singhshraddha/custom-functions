@@ -64,6 +64,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         Called on df.groupby
         """
         ret_dict = {}
+        group.dropna(inplace=True)
         for check, output in zip(self.quality_checks, self.output_items):
             agg_func = getattr(self, check)
             if len(group[self.input_items]) > 1:
