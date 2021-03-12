@@ -4,7 +4,7 @@
 #  US Government Users Restricted Rights - Use, duplication, or disclosure
 #  restricted by GSA ADP Schedule Contract with IBM Corp.
 
-from custom.data_quality import DataQualityChecks
+from custom.data_quality import SS_DataQualityChecks
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -15,8 +15,7 @@ QUALITY_CHECKS = ['constant_value',
                   'stuck_at_zero',
                   'white_noise'
                   ]
-fn = DataQualityChecks(source='input', quality_checks=QUALITY_CHECKS,
-                       name=QUALITY_CHECKS)
+fn = SS_DataQualityChecks(source='input', quality_checks=QUALITY_CHECKS, name=QUALITY_CHECKS)
 
 data_size_per_id = 100
 time_axis = np.linspace(0, 20, data_size_per_id)
@@ -25,10 +24,10 @@ id_1_data = np.sin(time_axis) # sin wave
 id_2_data = np.ones(data_size_per_id) # constant value
 id_3_data = np.zeros(data_size_per_id) # stuck at zero
 id_4_data = np.add(id_0_data, id_1_data) # sin wave with white noise
-id_5_data = [1, 2, 3]
+id_5_data = [1]
 data = {
     'id': np.concatenate((np.zeros(data_size_per_id), [1]*data_size_per_id, [2]*data_size_per_id,
-                          [3]*data_size_per_id, [4]*data_size_per_id, [5]*3)),
+                          [3]*data_size_per_id, [4]*data_size_per_id, [5])),
     'input': np.concatenate((id_0_data, id_1_data, id_2_data, id_3_data, id_4_data, id_5_data))
 }
 

@@ -19,17 +19,6 @@ logger = logging.getLogger(__name__)
 PACKAGE_URL = 'git+https://github.com/singhshraddha/custom-functions@development'
 
 
-#decorator to confirm data is series
-def check_input_type(func):
-    def func_wrapper(series):
-        if not isinstance(series, pd.Series):
-            return f"Unexpected data format {type(series)}"
-        res = func(series)
-        return res
-
-    return func_wrapper
-
-
 class SS_DataQualityChecks(BaseComplexAggregator):
     """
     Data Quality module will help asses the quality of incoming sensor data, using the provided metrics.
@@ -49,6 +38,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
                       'stuck_at_zero',
                       'white_noise'
                       ]
+    SERIES_LEN_ERROR = 'Series len < 1'
 
     def __init__(self, source=None, quality_checks=None, name=None):
         super().__init__()
@@ -76,12 +66,14 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         ret_dict = {}
         for check, output in zip(self.quality_checks, self.output_items):
             agg_func = getattr(self, check)
-            ret_dict[output] = group[self.input_items].agg(agg_func)
+            if len(group[self.input_items]) > 1:
+                ret_dict[output] = group[self.input_items].agg(agg_func)
+            else:
+                ret_dict[output] = self.SERIES_LEN_ERROR
 
         return pd.Series(ret_dict, index=self.output_items)
 
     @staticmethod
-    @check_input_type
     def constant_value(series):
         """
         A time series signal stuck at a constant value contains no information, and is highly likely to be due to an
@@ -93,7 +85,6 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         return str(bool(series.nunique() <= 1))
 
     @staticmethod
-    @check_input_type
     def sample_entropy(series):
         """
         Measure of signal complexity/randomness in signal
@@ -132,7 +123,6 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         return str(sampen(series.to_list(), m=2, r=0.2 * series.std()))
 
     @staticmethod
-    @check_input_type
     def stationarity(series):
         """
         A time series is Stationary when it's mean, variance, co-variance do not change over time.
@@ -172,7 +162,6 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         return stationary_type[adf_stationary, kpss_stationary]
 
     @staticmethod
-    @check_input_type
     def stuck_at_zero(series):
         """
         A time series signal stuck at zero contains no information
@@ -184,7 +173,6 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         return str(bool(is_close_to_zero))
 
     @staticmethod
-    @check_input_type
     def white_noise(series):
         """
         A white noise time series signal is random signal that cannot be reasonably predicted
