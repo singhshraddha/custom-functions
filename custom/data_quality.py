@@ -16,8 +16,19 @@ from statsmodels.stats.diagnostic import acorr_ljungbox
 
 logger = logging.getLogger(__name__)
 
-
 PACKAGE_URL = 'git+https://github.com/singhshraddha/custom-functions@development'
+
+
+#decorator to confirm data is series
+def check_input_type(func):
+    def func_wrapper(series):
+        if not isinstance(series, pd.Series):
+            return f"Unexpected data format {type(series)}"
+        res = func(series)
+        return res
+
+    return func_wrapper
+
 
 class SS_DataQualityChecks(BaseComplexAggregator):
     """
@@ -70,6 +81,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         return pd.Series(ret_dict, index=self.output_items)
 
     @staticmethod
+    @check_input_type
     def constant_value(series):
         """
         A time series signal stuck at a constant value contains no information, and is highly likely to be due to an
@@ -81,6 +93,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         return bool(series.nunique() <= 1)
 
     @staticmethod
+    @check_input_type
     def sample_entropy(series):
         """
         Measure of signal complexity/randomness in signal
@@ -96,6 +109,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
 
         :returns float
         """
+
         def sampen(L, m, r):
             N = len(L)
 
@@ -118,10 +132,11 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         return sampen(series.to_list(), m=2, r=0.2 * series.std())
 
     @staticmethod
+    @check_input_type
     def stationarity(series):
         """
         A time series is Stationary when it's mean, variance, co-variance do not change over time.
-        Time-invariant process are requiremetns of statistical models for forecasting problems
+        Time-invariant process are requirements of statistical models for forecasting problems
         Can indicate spurious causation between variable dependent on time
 
         Reference:
@@ -157,6 +172,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         return stationary_type[adf_stationary, kpss_stationary]
 
     @staticmethod
+    @check_input_type
     def stuck_at_zero(series):
         """
         A time series signal stuck at zero contains no information
@@ -168,6 +184,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         return bool(is_close_to_zero)
 
     @staticmethod
+    @check_input_type
     def white_noise(series):
         """
         A white noise time series signal is random signal that cannot be reasonably predicted
@@ -175,7 +192,6 @@ class SS_DataQualityChecks(BaseComplexAggregator):
 
         :returns bool
         """
-
         # ljung box test; H0: data is iid/random/white noise
         significance_level = 0.05  # p < 0.05 rejects null hypothesis
         ljung_box_q_statitic, ljung_box_p_value = acorr_ljungbox(series, lags=len(series) - 1)
