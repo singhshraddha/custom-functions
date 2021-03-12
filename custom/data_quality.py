@@ -90,7 +90,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         :returns bool True when series has constant_value
                       False when series has varying values
         """
-        return bool(series.nunique() <= 1)
+        return str(bool(series.nunique() <= 1))
 
     @staticmethod
     @check_input_type
@@ -129,7 +129,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
             # Return SampEn
             return -np.log(A / B)
 
-        return sampen(series.to_list(), m=2, r=0.2 * series.std())
+        return str(sampen(series.to_list(), m=2, r=0.2 * series.std()))
 
     @staticmethod
     @check_input_type
@@ -181,7 +181,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         """
         tolerance = 10e-8
         is_close_to_zero = np.all((series.to_numpy() <= tolerance))
-        return bool(is_close_to_zero)
+        return str(bool(is_close_to_zero))
 
     @staticmethod
     @check_input_type
@@ -192,10 +192,17 @@ class SS_DataQualityChecks(BaseComplexAggregator):
 
         :returns bool
         """
+        is_white_noise = {
+            # adf stationary, kpss stationary
+            False: 'False',
+            True: 'True',
+        }
         # ljung box test; H0: data is iid/random/white noise
+        white_noise = True  # accept Null Hypothesis
         significance_level = 0.05  # p < 0.05 rejects null hypothesis
         ljung_box_q_statitic, ljung_box_p_value = acorr_ljungbox(series, lags=len(series) - 1)
 
         if all([p_value < significance_level for p_value in ljung_box_p_value]):
-            return False  # reject Null Hypothesis
-        return True  # accept Null Hypothesis
+            white_noise = False  # reject Null Hypothesis
+
+        return is_white_noise[white_noise]
