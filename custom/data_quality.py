@@ -7,7 +7,8 @@
 import logging
 from iotfunctions.base import (BaseComplexAggregator)
 from iotfunctions.ui import (UISingleItem,
-                             UIMulti)
+                             UIMulti,
+                             UIFunctionOutMulti)
 import math
 import pandas as pd
 import numpy as np
@@ -247,8 +248,15 @@ class SS_DataQualityChecks_2(BaseComplexAggregator):
                           values=cls.BOOLEAN_QUALITY_CHECKS, output_item='name', is_output_datatype_derived=True,
                           required=False)
                   ]
+        outputs = [UIFunctionOutMulti('name', cardinality_from='quality_checks_str', datatype=str,
+                                      description='string output'),
+                   UIFunctionOutMulti('name', cardinality_from='quality_checks_num', datatype=float,
+                                      description='numerical output'),
+                   UIFunctionOutMulti('name', cardinality_from='quality_checks_bool', datatype=bool,
+                                      description='boolean output')
+                   ]
 
-        return inputs, []
+        return inputs, outputs
 
     def execute(self, group):
         """
