@@ -67,11 +67,11 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         Called on df.groupby
         """
         ret_dict = {}
-        group.dropna(inplace=True)
+        group_no_nan = group.dropna()
         for check, output in zip(self.quality_checks, self.output_items):
             agg_func = getattr(self, check)
-            if len(group[self.input_items]) > 1:
-                ret_dict[output] = group[self.input_items].agg(agg_func)
+            if len(group_no_nan[self.input_items]) > 1:
+                ret_dict[output] = group_no_nan[self.input_items].agg(agg_func)
             #length of incoming data is too short for meaningful computation
             else:
                 logger.warning('Not enough data to perform data quality checks')

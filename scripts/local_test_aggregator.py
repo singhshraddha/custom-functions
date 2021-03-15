@@ -35,7 +35,7 @@ data = {
 
 
 df = pd.DataFrame(data)
-groups = df.groupby(['id'])
+groups = df.groupby('id')
 
 out = groups.apply(fn.execute)
 
