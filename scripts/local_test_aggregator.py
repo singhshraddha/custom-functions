@@ -28,7 +28,7 @@ id_3_data = np.zeros(data_size_per_id) # stuck at zero
 id_4_data = np.add(id_0_data, id_1_data) # sin wave with white noise
 id_5_data = [1]
 data = {
-    'id': np.concatenate((np.zeros(data_size_per_id), [1]*data_size_per_id, [2]*data_size_per_id,
+    'id': np.concatenate(([6]*data_size_per_id, [1]*data_size_per_id, [2]*data_size_per_id,
                           [3]*data_size_per_id, [4]*data_size_per_id, [5])),
     'input': np.concatenate((id_0_data, id_1_data, id_2_data, id_3_data, id_4_data, id_5_data))
 }
@@ -39,8 +39,9 @@ groups = df.groupby(['id'])
 
 out = groups.apply(fn.execute)
 
+print(pd.__version__)
 if plot_print:
-    plt.plot(time_axis, id_0_data, label="id0")
+    plt.plot(time_axis, id_0_data, label="id6")
     plt.plot(time_axis, id_1_data, label="id1")
     plt.plot(time_axis, id_2_data, label="id2")
     plt.plot(time_axis, id_3_data, label="id3")

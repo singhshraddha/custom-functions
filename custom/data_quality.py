@@ -21,19 +21,19 @@ PACKAGE_URL = 'git+https://github.com/singhshraddha/custom-functions@development
 
 class SS_DataQualityChecks(BaseComplexAggregator):
     """
-    Data Quality module will help asses the quality of incoming sensor data, using the provided metrics.
+    Data Quality module will help assess the quality of incoming sensor data, using the provided metrics.
 
     constant_value is a boolean indicator for unchanging time series signal
 
-    sample_entropy asses the complexity of information in the data; a number closer to zero indicates
+    sample_entropy assess the complexity of information in the data; a number closer to zero indicates
     patterns that can be learnt easily
 
-    staionarity asses if the mean, variance, co-variance of time series signal are changing over time; A signal can 
+    staionarity assess if the mean, variance, co-variance of time series signal are changing over time; A signal can 
     be Stationary, Non Stationary, Trend Stationary, and Difference Stationary
 
     stuck_at_zero is a boolean indicator for unchanging time series signal that is stuck at 0
-    white_noise is a boolean indicator for a time series signal that is random and contains no pattern
 
+    white_noise is a boolean indicator for a time series signal that is random and contains no pattern
     """
     # define check name in QUALITY_CHECK same as corresponding staticmethod that executes the function
     ALL_QUALITY_CHECKS = ['constant_value',
@@ -58,8 +58,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         inputs = [UISingleItem(name='source', datatype=None,
                                description='Choose data item to run data quality checks on'),
                   UIMulti(name='quality_checks', datatype=str, description='Choose quality checks to run',
-                          values=cls.ALL_QUALITY_CHECKS, output_item='name',
-                          is_output_datatype_derived=True)]
+                          values=cls.ALL_QUALITY_CHECKS, output_item='name')]
 
         return inputs, []
 
