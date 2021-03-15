@@ -9,6 +9,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+plot_print = False
+
 QUALITY_CHECKS = ['constant_value',
                   'sample_entropy',
                   'stationarity',
@@ -37,12 +39,17 @@ groups = df.groupby(['id'])
 
 out = groups.apply(fn.execute)
 
-plt.plot(time_axis, id_0_data, label="id0")
-plt.plot(time_axis, id_1_data, label="id1")
-plt.plot(time_axis, id_2_data, label="id2")
-plt.plot(time_axis, id_3_data, label="id3")
-plt.plot(time_axis, id_4_data, label="id4")
-plt.legend()
-plt.show(block=False)
+if plot_print:
+    plt.plot(time_axis, id_0_data, label="id0")
+    plt.plot(time_axis, id_1_data, label="id1")
+    plt.plot(time_axis, id_2_data, label="id2")
+    plt.plot(time_axis, id_3_data, label="id3")
+    plt.plot(time_axis, id_4_data, label="id4")
+    plt.legend()
+    plt.show(block=False)
+else:
+    print('---------------------------------------')
+    print(out)
+    print('---------------------------------------')
 
 exit(0)

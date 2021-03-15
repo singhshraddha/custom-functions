@@ -22,23 +22,27 @@ PACKAGE_URL = 'git+https://github.com/singhshraddha/custom-functions@development
 class SS_DataQualityChecks(BaseComplexAggregator):
     """
     Data Quality module will help asses the quality of incoming sensor data, using the provided metrics.
+
     constant_value is a boolean indicator for unchanging time series signal
+
     sample_entropy asses the complexity of information in the data; a number closer to zero indicates
     patterns that can be learnt easily
+
     staionarity asses if the mean, variance, co-variance of time series signal are changing over time; A signal can 
     be Stationary, Non Stationary, Trend Stationary, and Difference Stationary
+
     stuck_at_zero is a boolean indicator for unchanging time series signal that is stuck at 0
     white_noise is a boolean indicator for a time series signal that is random and contains no pattern
 
     """
     # define check name in QUALITY_CHECK same as corresponding staticmethod that executes the function
-    QUALITY_CHECKS = ['constant_value',
-                      'sample_entropy',
-                      'stationarity',
-                      'stuck_at_zero',
-                      'white_noise'
-                      ]
-    SERIES_LEN_ERROR = 'Series len < 1'
+    ALL_QUALITY_CHECKS = ['constant_value',
+                          'sample_entropy',
+                          'stationarity',
+                          'stuck_at_zero',
+                          'white_noise'
+                         ]
+    SERIES_LEN_ERROR = {str: 'Series len < 1', float: -1, bool: False}
 
     def __init__(self, source=None, quality_checks=None, name=None):
         super().__init__()
@@ -54,7 +58,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         inputs = [UISingleItem(name='source', datatype=None,
                                description='Choose data item to run data quality checks on'),
                   UIMulti(name='quality_checks', datatype=str, description='Choose quality checks to run',
-                          values=cls.QUALITY_CHECKS, output_item='name',
+                          values=cls.ALL_QUALITY_CHECKS, output_item='name',
                           is_output_datatype_derived=True)]
 
         return inputs, []
@@ -69,13 +73,15 @@ class SS_DataQualityChecks(BaseComplexAggregator):
             agg_func = getattr(self, check)
             if len(group[self.input_items]) > 1:
                 ret_dict[output] = group[self.input_items].agg(agg_func)
+            #length of incoming data is too short for meaningful computation
             else:
-                ret_dict[output] = self.SERIES_LEN_ERROR
+                logger.warning('Not enough data to perform data quality checks')
+                ret_dict[output] = self.SERIES_LEN_ERROR[agg_func.__annotations__['return']]
 
         return pd.Series(ret_dict, index=self.output_items)
 
     @staticmethod
-    def constant_value(series):
+    def constant_value(series) -> bool:
         """
         A time series signal stuck at a constant value contains no information, and is highly likely to be due to an
         error in data collection
@@ -83,10 +89,10 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         :returns bool True when series has constant_value
                       False when series has varying values
         """
-        return str(bool(series.nunique() <= 1))
+        return bool(series.nunique() <= 1)
 
     @staticmethod
-    def sample_entropy(series):
+    def sample_entropy(series) -> float:
         """
         Measure of signal complexity/randomness in signal
         A value closer to 0 indicates repeated patterns in data/ease of prediction
@@ -121,10 +127,10 @@ class SS_DataQualityChecks(BaseComplexAggregator):
             # Return SampEn
             return -np.log(A / B)
 
-        return str(sampen(series.to_list(), m=2, r=0.2 * series.std()))
+        return sampen(series.to_list(), m=2, r=0.2 * series.std())
 
     @staticmethod
-    def stationarity(series):
+    def stationarity(series) -> str:
         """
         A time series is Stationary when it's mean, variance, co-variance do not change over time.
         Time-invariant process are requirements of statistical models for forecasting problems
@@ -163,7 +169,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         return stationary_type[adf_stationary, kpss_stationary]
 
     @staticmethod
-    def stuck_at_zero(series):
+    def stuck_at_zero(series) -> bool:
         """
         A time series signal stuck at zero contains no information
 
@@ -171,27 +177,22 @@ class SS_DataQualityChecks(BaseComplexAggregator):
         """
         tolerance = 10e-8
         is_close_to_zero = np.all((series.to_numpy() <= tolerance))
-        return str(bool(is_close_to_zero))
+        return bool(is_close_to_zero)
 
     @staticmethod
-    def white_noise(series):
+    def white_noise(series) -> bool:
         """
         A white noise time series signal is random signal that cannot be reasonably predicted
         (Additional use) Forecasting error should be white nose
 
         :returns bool
         """
-        is_white_noise = {
-            # adf stationary, kpss stationary
-            False: 'False',
-            True: 'True',
-        }
         # ljung box test; H0: data is iid/random/white noise
         white_noise = True  # accept Null Hypothesis
         significance_level = 0.05  # p < 0.05 rejects null hypothesis
-        ljung_box_q_statitic, ljung_box_p_value = acorr_ljungbox(series, lags=len(series) - 1)
+        ljung_box_q_statitic, ljung_box_p_value = acorr_ljungbox(series, lags=len(series) - 1, return_df=False)
 
         if all([p_value < significance_level for p_value in ljung_box_p_value]):
             white_noise = False  # reject Null Hypothesis
 
-        return is_white_noise[white_noise]
+        return white_noise
