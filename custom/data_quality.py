@@ -236,17 +236,11 @@ class SS_DataQualityChecks_2(BaseComplexAggregator):
         inputs = [UISingleItem(name='source', datatype=None,
                                description='Choose data item to run data quality checks on'),
                   UIMulti(name='quality_checks_str', datatype=str, description='Choose quality checks to run. These '
-                                                                               'checks will return string output ',
-                          values=cls.STR_QUALITY_CHECKS, output_item='name', is_output_datatype_derived=True,
-                          required=False),
-                  UIMulti(name='quality_checks_num', datatype=float, description='Choose quality checks to run. These '
-                                                                                 'checks will return numerical output ',
-                          values=cls.NUMERICAL_QUALITY_CHECKS, output_item='name', is_output_datatype_derived=True,
-                          required=False),
-                  UIMulti(name='quality_checks_bool', datatype=bool, description='Choose quality checks to run. These '
-                                                                                 'checks will return boolean output',
-                          values=cls.BOOLEAN_QUALITY_CHECKS, output_item='name', is_output_datatype_derived=True,
-                          required=False)
+                          'checks will return string output ', values=cls.STR_QUALITY_CHECKS, required=False),
+                  UIMulti(name='quality_checks_num', datatype=str, description='Choose quality checks to run. These '
+                          'checks will return numerical output ', values=cls.NUMERICAL_QUALITY_CHECKS, required=False),
+                  UIMulti(name='quality_checks_bool', datatype=str, description='Choose quality checks to run. These '
+                          'checks will return boolean output', values=cls.BOOLEAN_QUALITY_CHECKS, required=False)
                   ]
         outputs = [UIFunctionOutMulti('name', cardinality_from='quality_checks_str', datatype=str,
                                       description='string output'),
