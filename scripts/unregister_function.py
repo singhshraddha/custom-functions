@@ -11,4 +11,4 @@ with open('../dev_resources/credentials_as_dev.json', encoding='utf-8') as F:
 db_schema = None
 db = Database(credentials=credentials)
 
-db.unregister_functions(['MatrixProfileAnomalyScoreTest'])
+db.unregister_functions(['SS_DataQualityChecks_2'])
