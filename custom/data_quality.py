@@ -240,10 +240,10 @@ class SS_DataQualityChecks_2(BaseComplexAggregator):
                                description='Choose data item to run data quality checks on'),
                   UIMulti(name='quality_checks_with_string_output', datatype=str, description='Choose quality checks '
                           'to run. These checks return string output ', values=cls.STR_QUALITY_CHECKS, required=False),
-                  UIMulti(name='quality_checks_with_string_output', datatype=str, description='Choose quality checks '
-                          'to run. These checks return numerical output ', values=cls.NUMERICAL_QUALITY_CHECKS,
+                  UIMulti(name='quality_checks_with_numerical_output', datatype=str, description='Choose quality '
+                          'checks to run. These checks return numerical output ', values=cls.NUMERICAL_QUALITY_CHECKS,
                           required=False),
-                  UIMulti(name='quality_checks_boolean_output', datatype=str, description='Choose quality checks '
+                  UIMulti(name='quality_checks_with_boolean_output', datatype=str, description='Choose quality checks '
                           'to run. These checks return boolean output', values=cls.BOOLEAN_QUALITY_CHECKS,
                           required=False)
                   ]
@@ -251,7 +251,7 @@ class SS_DataQualityChecks_2(BaseComplexAggregator):
                                       description='quality check returns string output'),
                    UIFunctionOutMulti('name', cardinality_from='quality_checks_with_numerical_output', datatype=float,
                                       description='quality check returns numerical output'),
-                   UIFunctionOutMulti('name', cardinality_from='quality_checks_boolean_output', datatype=bool,
+                   UIFunctionOutMulti('name', cardinality_from='quality_checks_with_boolean_output', datatype=bool,
                                       description='quality check returns returns boolean output')
                    ]
 
