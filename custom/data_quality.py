@@ -42,7 +42,7 @@ class SS_DataQualityChecks(BaseComplexAggregator):
                           'stationarity',
                           'stuck_at_zero',
                           'white_noise'
-                         ]
+                          ]
     SERIES_LEN_ERROR = {str: 'Series len < 1', float: -1, bool: False}
 
     def __init__(self, source=None, quality_checks=None, name=None):
@@ -227,9 +227,13 @@ class SS_DataQualityChecks_2(BaseComplexAggregator):
         super().__init__()
 
         self.input_items = source
-        self.quality_checks = np.append(quality_checks_with_string_output, quality_checks_with_numerical_output, 
+
+        if quality_checks_with_string_output is None: quality_checks_with_string_output = []
+        if quality_checks_with_numerical_output is None: quality_checks_with_numerical_output = []
+        if quality_checks_with_boolean_output is None: quality_checks_with_boolean_output = []
+        self.quality_checks = np.append(quality_checks_with_string_output, quality_checks_with_numerical_output,
                                         quality_checks_with_boolean_output)
-        self.quality_checks = self.quality_checks[self.quality_checks != np.array(None)]
+
         self.output_items = name
         logger.debug(f'Data Quality Checks will be performed for : {source}')
         logger.debug(f'quality checks selected: {self.quality_checks}  corresponding output: {name}')
@@ -238,13 +242,16 @@ class SS_DataQualityChecks_2(BaseComplexAggregator):
     def build_ui(cls):
         inputs = [UISingleItem(name='source', datatype=None,
                                description='Choose data item to run data quality checks on'),
-                  UIMulti(name='quality_checks_with_string_output', datatype=str, description='Choose quality checks '
-                          'to run. These checks return string output ', values=cls.STR_QUALITY_CHECKS, required=False),
-                  UIMulti(name='quality_checks_with_numerical_output', datatype=str, description='Choose quality '
-                          'checks to run. These checks return numerical output ', values=cls.NUMERICAL_QUALITY_CHECKS,
+                  UIMulti(name='quality_checks_with_string_output', datatype=str, description='Select quality checks '
+                                                                                              'to run. These checks return string output ',
+                          values=cls.STR_QUALITY_CHECKS, required=False),
+                  UIMulti(name='quality_checks_with_numerical_output', datatype=str, description='Select quality '
+                                                                                                 'checks to run. These checks return numerical output ',
+                          values=cls.NUMERICAL_QUALITY_CHECKS,
                           required=False),
-                  UIMulti(name='quality_checks_with_boolean_output', datatype=str, description='Choose quality checks '
-                          'to run. These checks return boolean output', values=cls.BOOLEAN_QUALITY_CHECKS,
+                  UIMulti(name='quality_checks_with_boolean_output', datatype=str, description='Select quality checks '
+                                                                                               'to run. These checks return boolean output',
+                          values=cls.BOOLEAN_QUALITY_CHECKS,
                           required=False)
                   ]
         outputs = [UIFunctionOutMulti('name', cardinality_from='quality_checks_with_string_output', datatype=str,
