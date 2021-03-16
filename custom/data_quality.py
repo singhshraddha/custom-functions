@@ -228,11 +228,11 @@ class SS_DataQualityChecks_2(BaseComplexAggregator):
         self.input_items = source
         self.quality_checks = []
         if quality_checks_with_string_output:
-            self.quality_checks.append(quality_checks_with_string_output)
+            self.quality_checks.extend(quality_checks_with_string_output)
         if quality_checks_with_numerical_output:
-            self.quality_checks.append(quality_checks_with_numerical_output)
+            self.quality_checks.extend(quality_checks_with_numerical_output)
         if quality_checks_with_boolean_output:
-            self.quality_checks.append(quality_checks_with_boolean_output)
+            self.quality_checks.extend(quality_checks_with_boolean_output)
 
         self.output_items = name
         logger.debug(f'Data Quality Checks will be performed for : {source}')
