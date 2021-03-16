@@ -222,17 +222,17 @@ class SS_DataQualityChecks_2(BaseComplexAggregator):
     SERIES_LEN_ERROR = {str: 'Series len < 1', float: -1, bool: False}
 
     def __init__(self, source=None, quality_checks_with_string_output=None, quality_checks_with_numerical_output=None,
-                 quality_checks_with_boolean_output=None,
-                 name=None):
+                 quality_checks_with_boolean_output=None, name=None):
         super().__init__()
 
         self.input_items = source
-
-        if quality_checks_with_string_output is None: quality_checks_with_string_output = []
-        if quality_checks_with_numerical_output is None: quality_checks_with_numerical_output = []
-        if quality_checks_with_boolean_output is None: quality_checks_with_boolean_output = []
-        self.quality_checks = np.append(quality_checks_with_string_output, quality_checks_with_numerical_output,
-                                        quality_checks_with_boolean_output)
+        self.quality_checks = []
+        if quality_checks_with_string_output:
+            self.quality_checks.append(quality_checks_with_string_output)
+        if quality_checks_with_numerical_output:
+            self.quality_checks.append(quality_checks_with_numerical_output)
+        if quality_checks_with_boolean_output:
+            self.quality_checks.append(quality_checks_with_boolean_output)
 
         self.output_items = name
         logger.debug(f'Data Quality Checks will be performed for : {source}')
