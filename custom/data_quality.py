@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 PACKAGE_URL = 'git+https://github.com/singhshraddha/custom-functions@development'
 
 
-class SS_DataQualityChecks(BaseComplexAggregator):
+class Issue2135(BaseComplexAggregator):
     """
     Data Quality module will help assess the quality of incoming sensor data, using the provided metrics.
 
@@ -243,15 +243,12 @@ class SS_DataQualityChecks_2(BaseComplexAggregator):
         inputs = [UISingleItem(name='source', datatype=None,
                                description='Choose data item to run data quality checks on'),
                   UIMulti(name='quality_checks_with_string_output', datatype=str, description='Select quality checks '
-                                                                                              'to run. These checks return string output ',
-                          values=cls.STR_QUALITY_CHECKS, required=False),
+                          'to run. These checks return string output ', values=cls.STR_QUALITY_CHECKS, required=False),
                   UIMulti(name='quality_checks_with_numerical_output', datatype=str, description='Select quality '
-                                                                                                 'checks to run. These checks return numerical output ',
-                          values=cls.NUMERICAL_QUALITY_CHECKS,
+                          'checks to run. These checks return numerical output ', values=cls.NUMERICAL_QUALITY_CHECKS,
                           required=False),
                   UIMulti(name='quality_checks_with_boolean_output', datatype=str, description='Select quality checks '
-                                                                                               'to run. These checks return boolean output',
-                          values=cls.BOOLEAN_QUALITY_CHECKS,
+                          'to run. These checks return boolean output', values=cls.BOOLEAN_QUALITY_CHECKS,
                           required=False)
                   ]
         outputs = [UIFunctionOutMulti('name', cardinality_from='quality_checks_with_string_output', datatype=str,
@@ -259,7 +256,7 @@ class SS_DataQualityChecks_2(BaseComplexAggregator):
                    UIFunctionOutMulti('name', cardinality_from='quality_checks_with_numerical_output', datatype=float,
                                       description='quality check returns numerical output'),
                    UIFunctionOutMulti('name', cardinality_from='quality_checks_with_boolean_output', datatype=bool,
-                                      description='quality check returns returns boolean output')
+                                      description='quality check returns boolean output')
                    ]
 
         return inputs, outputs
